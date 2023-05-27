@@ -186,13 +186,13 @@ void Translation::visit(ast::NegExpr *e) {
 void Translation::visit(ast::NotExpr *e) {
     e->e->accept(this);
 
-    e->ATTR(val) = tr->genNeg(e->e->ATTR(val));
+    e->ATTR(val) = tr->genLNot(e->e->ATTR(val));
 }
 //按位
 void Translation::visit(ast::BitNotExpr *e) {
     e->e->accept(this);
 
-    e->ATTR(val) = tr->genNeg(e->e->ATTR(val));
+    e->ATTR(val) = tr->genBNot(e->e->ATTR(val));
 }
 
 
