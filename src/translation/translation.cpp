@@ -182,6 +182,19 @@ void Translation::visit(ast::NegExpr *e) {
 
     e->ATTR(val) = tr->genNeg(e->e->ATTR(val));
 }
+//逻辑
+void Translation::visit(ast::NotExpr *e) {
+    e->e->accept(this);
+
+    e->ATTR(val) = tr->genNeg(e->e->ATTR(val));
+}
+//按位
+void Translation::visit(ast::BitNotExpr *e) {
+    e->e->accept(this);
+
+    e->ATTR(val) = tr->genNeg(e->e->ATTR(val));
+}
+
 
 /* Translating an ast::LvalueExpr node.
  *

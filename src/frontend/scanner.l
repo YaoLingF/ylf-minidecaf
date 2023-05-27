@@ -72,6 +72,8 @@ IDENTIFIER    ([A-Za-z][_0-9A-Za-z]*)
 <B><EOF> { return yy::parser::make_END (loc); }
 <<EOF>> { return yy::parser::make_END (loc); }
 
+"!" { return yy::parser::make_LNOT (loc); }//逻辑取反
+"~" { return yy::parser::make_BNOT (loc); }//按位取反
 "int"         { return yy::parser::make_INT  (loc);      }
 "return"      { return yy::parser::make_RETURN  (loc);   }
 ";"          { return yy::parser::make_SEMICOLON  (loc); }    
@@ -80,7 +82,7 @@ IDENTIFIER    ([A-Za-z][_0-9A-Za-z]*)
 "{"          { return yy::parser::make_LBRACE  (loc);       }
 "}"          { return yy::parser::make_RBRACE  (loc);       }
 "+"          { return yy::parser::make_PLUS  (loc);       }
-"-"          { return yy::parser::make_MINUS  (loc);       }
+"-"          { return yy::parser::make_MINUS  (loc);       } //负号已定义
 "if"         { return yy::parser::make_IF  (loc);       }
 "else"         { return yy::parser::make_ELSE  (loc);       }
 "while"       { return yy::parser::make_WHILE  (loc);       }
