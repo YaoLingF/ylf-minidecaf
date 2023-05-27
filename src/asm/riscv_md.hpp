@@ -85,6 +85,10 @@ struct RiscvInstr : public Instr {
         COMMENT,
         // instructions/pseudo instructions
         ADD,
+        SUB,
+        MUL,
+        DIV,
+        MOD,
         NEG,
         NOT,
         SEQZ,
