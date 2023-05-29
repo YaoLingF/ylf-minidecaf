@@ -29,6 +29,10 @@ class Translation : public ast::Visitor {
     virtual void visit(ast::IfStmt *);
     virtual void visit(ast::ReturnStmt *);
     virtual void visit(ast::AddExpr *);
+    virtual void visit(ast::SubExpr *);//减
+    virtual void visit(ast::MulExpr *);//乘
+    virtual void visit(ast::DivExpr *);//除
+    virtual void visit(ast::ModExpr *);//模
     virtual void visit(ast::IntConst *);
     virtual void visit(ast::NegExpr *);
     virtual void visit(ast::NotExpr *);//逻辑
