@@ -485,7 +485,7 @@ void RiscvDesc::emitInstr(RiscvInstr *i) {
         break;
         
     case RiscvInstr::MOD:
-        oss << "mod" << i->r0->name << ", " << i->r1->name << ", " << i->r2->name;
+        oss << "rem" << i->r0->name << ", " << i->r1->name << ", " << i->r2->name;
         break;
     
     case RiscvInstr::BEQZ:
