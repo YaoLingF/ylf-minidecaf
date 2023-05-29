@@ -83,6 +83,9 @@ IDENTIFIER    ([A-Za-z][_0-9A-Za-z]*)
 "}"          { return yy::parser::make_RBRACE  (loc);       }
 "+"          { return yy::parser::make_PLUS  (loc);       }
 "-"          { return yy::parser::make_MINUS  (loc);       } //负号已定义
+"*"          { return yy::parser::make_TIMES  (loc);       }//乘
+"/"          { return yy::parser::make_SLASH  (loc);       }//除
+"%"          { return yy::parser::make_MOD  (loc);       }//模
 "if"         { return yy::parser::make_IF  (loc);       }
 "else"         { return yy::parser::make_ELSE  (loc);       }
 "while"       { return yy::parser::make_WHILE  (loc);       }
