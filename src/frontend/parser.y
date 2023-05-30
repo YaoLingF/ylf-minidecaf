@@ -94,9 +94,11 @@ void scan_end();
 %nterm<mind::ast::Program* > Program FoDList
 %nterm<mind::ast::FuncDefn* > FuncDefn
 %nterm<mind::ast::Type*> Type
-%nterm<mind::ast::Statement*> Stmt  ReturnStmt ExprStmt IfStmt  CompStmt WhileStmt 
+%nterm<mind::ast::Statement*> Stmt  ReturnStmt ExprStmt IfStmt  CompStmt WhileStmt DeclStmt
 %nterm<mind::ast::Expr*> Expr
+%nterm<mind::ast::VarRef*> VarRef
 /*   SUBSECTION 2.2: associativeness & precedences */
+%right ASSIGN
 %nonassoc QUESTION
 %left     OR
 %left     AND
@@ -152,14 +154,12 @@ Stmt        : ReturnStmt {$$ = $1;}|
               IfStmt     {$$ = $1;}|
               WhileStmt  {$$ = $1;}|
               CompStmt   {$$ = $1;}|
+              DeclStmt   {$$ = $1;}|
               BREAK SEMICOLON  
                 {$$ = new ast::BreakStmt(POS(@1));} |
               SEMICOLON
-                {$$ = new ast::EmptyStmt(POS(@1));} |
-              Type IDENTIFIER SEMICOLON
-                { $$ = new ast::VarDecl($2, $1, POS(@2)); } |
-              Type IDENTIFIER ASSIGN Expr SEMICOLON
-                { $$ = new ast::VarDecl($2, $1, $4, POS(@2)); }
+                {$$ = new ast::EmptyStmt(POS(@1));} 
+              
             ;
 CompStmt    : LBRACE StmtList RBRACE
                 {$$ = new ast::CompStmt($2,POS(@1));}
@@ -178,14 +178,24 @@ ReturnStmt  : RETURN Expr SEMICOLON
             ;
 ExprStmt    : Expr SEMICOLON
                 { $$ = new ast::ExprStmt($1, POS(@1)); } 
-            ;         
+            ;     
+
+DeclStmt    : Type IDENTIFIER SEMICOLON
+                { $$ = new ast::VarDecl($2, $1, POS(@1)); }
+            | Type IDENTIFIER ASSIGN Expr SEMICOLON
+                { $$ = new ast::VarDecl($2, $1, $4, POS(@1)); }
+            ;
+            
+VarRef      : IDENTIFIER
+                { $$ = new ast::VarRef($1, POS(@1)); }
+            ;    
 
 Expr        : ICONST
                 { $$ = new ast::IntConst($1, POS(@1)); }   
-            | IDENTIFIER
-                { $$ = new ast::LvalueExpr(new ast::VarRef($1, POS(@1)), POS(@1)); }
-            | IDENTIFIER ASSIGN Expr
-                { $$ = new ast::AssignExpr(new ast::VarRef($1, POS(@1)), $3, POS(@2)); }         
+            | VarRef
+                { $$ = new ast::LvalueExpr($1, POS(@1)); }
+            | VarRef ASSIGN Expr
+                { $$ = new ast::AssignExpr($1, $3, POS(@2)); }    
             | LPAREN Expr RPAREN
                 { $$ = $2; }
             | Expr PLUS Expr
