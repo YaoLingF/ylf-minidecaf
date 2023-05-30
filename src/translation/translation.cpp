@@ -96,6 +96,11 @@ void Translation::visit(ast::FuncDefn *f) {
  */
 void Translation::visit(ast::AssignExpr *s) {
     // TODO
+    s->left->accept(this);
+    s->e->accept(this);
+    // (ME)NOTICE: for pointers, this should be different
+    tr->genAssign(((ast::VarRef *)s->left)->ATTR(sym)->getTemp(), s->e->ATTR(val));
+    s->ATTR(val) = ((ast::VarRef *)s->left)->ATTR(sym)->getTemp();
 }
 
 /* Translating an ast::ExprStmt node.
@@ -287,8 +292,10 @@ void Translation::visit(ast::BitNotExpr *e) {
  * NOTE:
  *   different Lvalue kinds need different translation
  */
-void Translation::visit(ast::LvalueExpr *e) {
+void Translation::visit(ast::LvalueExpr *e) {//step5
     // TODO
+    e->lvalue->accept(this);
+    e->ATTR(val) = ((ast::VarRef *)e->lvalue)->ATTR(sym)->getTemp();
 }
 
 /* Translating an ast::VarRef node.
@@ -313,6 +320,12 @@ void Translation::visit(ast::VarRef *ref) {
  */
 void Translation::visit(ast::VarDecl *decl) {
     // TODO
+     decl->ATTR(sym)->attachTemp(tr->getNewTempI4());
+    // the `init` Expr is allowed to use the new-declared symbol
+    if (decl->init != NULL)
+        decl->init->accept(this);
+    if (decl->init != NULL)
+        tr->genAssign(decl->ATTR(sym)->getTemp(), decl->init->ATTR(val));
 }
 
 /* Translates an entire AST into a Piece list.

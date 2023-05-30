@@ -219,7 +219,11 @@ void RiscvDesc::emitTac(Tac *t) {
     case Tac::LOAD_IMM4:
         emitLoadImm4Tac(t);
         break;
-
+        
+    case Tac::ASSIGN:
+        emitAssignTac(t);
+        break;
+        
     case Tac::NEG:
         emitUnaryTac(RiscvInstr::NEG, t);
         break;
@@ -356,9 +360,10 @@ void RiscvDesc::emitBinaryTac(RiscvInstr::OpCode op, Tac *t) {
             addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR, NULL);
             break;
         case RiscvInstr::OpCode::LAND:
-            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r1], _reg[r1], NULL, 0, EMPTY_STR, NULL);
-            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r2], _reg[r2], NULL, 0, EMPTY_STR, NULL);
-            addInstr(RiscvInstr::OpCode::AND, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::SNEZ, _reg[r0], _reg[r1], NULL, 0, EMPTY_STR, {});
+            addInstr(RiscvInstr::SUB, _reg[r0], _reg[RiscvReg::ZERO], _reg[r0], 0, EMPTY_STR, {});
+            addInstr(RiscvInstr::AND, _reg[r0], _reg[r0], _reg[r2], 0, EMPTY_STR, {});
+            addInstr(RiscvInstr::SNEZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR, {});
             break;
         case RiscvInstr::OpCode::LOR:
             addInstr(RiscvInstr::OpCode::OR, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
@@ -367,6 +372,17 @@ void RiscvDesc::emitBinaryTac(RiscvInstr::OpCode op, Tac *t) {
         default:
             addInstr(op, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
     }
+}
+//step5
+void RiscvDesc::emitAssignTac(Tac *t) {
+    // eliminates useless assignments
+    if (!t->LiveOut->contains(t->op0.var))
+        return;
+
+    int r1 = getRegForRead(t->op1.var, 0, t->LiveOut);
+    int r0 = getRegForWrite(t->op0.var, r1, 0, t->LiveOut);
+
+    addInstr(RiscvInstr::MOVE, _reg[r0], _reg[r1], NULL, 0, EMPTY_STR, NULL);
 }
 
 /* Outputs a single instruction line.
