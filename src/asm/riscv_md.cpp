@@ -356,10 +356,9 @@ void RiscvDesc::emitBinaryTac(RiscvInstr::OpCode op, Tac *t) {
             addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR, NULL);
             break;
         case RiscvInstr::OpCode::LAND:
-            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r1], NULL, 0, EMPTY_STR,NULL);
-            addInstr(RiscvInstr::OpCode::NEG, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR,NULL);
-            addInstr(RiscvInstr::OpCode::AND, _reg[r0], _reg[r0], _reg[r2], 0, EMPTY_STR,NULL);
-            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR,NULL);
+            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r1], _reg[r1], NULL, 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r2], _reg[r2], NULL, 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::OpCode::AND, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
             break;
         case RiscvInstr::OpCode::LOR:
             addInstr(RiscvInstr::OpCode::OR, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
