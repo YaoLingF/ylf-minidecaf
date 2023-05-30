@@ -1,6 +1,10 @@
 
 通过 gcc 编译来了解如何翻译运算符到 RISC-V 汇编 riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 xxx.c -S -O3 -o xxx.s
 
+逻辑或等于0 等价于 a和b全为0 等价于 a|b为0
+
+逻辑与等与1 等价于 a和b全为非0 等价于snez(a)&snez(b)
+
 
 
 
