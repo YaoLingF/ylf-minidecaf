@@ -62,6 +62,8 @@ class SemPass2 : public ast::Visitor {
     // Visiting declarations
     virtual void visit(ast::FuncDefn *);
     virtual void visit(ast::Program *);
+    
+    virtual void visit(ast::IfExpr *);//step6
 };
 
 // recording the current return type
@@ -333,6 +335,19 @@ void SemPass2::visit(ast::AssignExpr *s) {
     }
 
     s->ATTR(type) = s->left->ATTR(type);
+}
+//step6
+void SemPass2::visit(ast::IfExpr *s) {
+    s->condition->accept(this);
+    if (!s->condition->ATTR(type)->equal(BaseType::Int)) {
+        issue(s->condition->getLocation(), new BadTestExprError());
+        ;
+    }
+    s->true_brch->accept(this);
+    s->false_brch->accept(this);
+    if (!s->true_brch->ATTR(type)->equal(s->false_brch->ATTR(type)))
+        issue(s->true_brch->getLocation(), new BadTestExprError());
+    s->ATTR(type) = s->true_brch->ATTR(type);
 }
 
 /* Visits an ast::ExprStmt node.
