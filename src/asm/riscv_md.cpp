@@ -251,6 +251,38 @@ void RiscvDesc::emitTac(Tac *t) {
     case Tac::MOD://模
         emitBinaryTac(RiscvInstr::MOD, t);
         break;
+        //step4
+    case Tac::LEQ:
+        emitBinaryTac(RiscvInstr::LEQ, t);
+        break;
+
+    case Tac::GEQ:
+        emitBinaryTac(RiscvInstr::GEQ, t);
+        break;
+
+    case Tac::LES:
+        emitBinaryTac(RiscvInstr::LES, t);
+        break;
+
+    case Tac::GRT:
+        emitBinaryTac(RiscvInstr::GRT, t);
+        break;
+
+    case Tac::EQU:
+        emitBinaryTac(RiscvInstr::EQU, t);
+        break;
+
+    case Tac::NEQ:
+        emitBinaryTac(RiscvInstr::NEQ, t);
+        break;
+
+    case Tac::LAND:
+        emitBinaryTac(RiscvInstr::LAND, t);
+        break;
+
+    case Tac::LOR:
+        emitBinaryTac(RiscvInstr::LOR, t);
+        break;
         
     default:
         mind_assert(false); // should not appear inside a basic block
@@ -306,7 +338,36 @@ void RiscvDesc::emitBinaryTac(RiscvInstr::OpCode op, Tac *t) {
     int r2 = getRegForRead(t->op2.var, r1, liveness);
     int r0 = getRegForWrite(t->op0.var, r1, r2, liveness);
 
-    addInstr(op, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+    switch(op){
+        case RiscvInstr::OpCode::LEQ://小于等于 == ！大于
+            addInstr(RiscvInstr::OpCode::GRT, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::OpCode::XORI, _reg[r0], _reg[r0], NULL, 1, EMPTY_STR, NULL);
+            break;
+        case RiscvInstr::OpCode::GEQ://大于等于 == !小于
+            addInstr(RiscvInstr::OpCode::LES, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::OpCode::XORI, _reg[r0], _reg[r0], NULL, 1, EMPTY_STR, NULL);
+            break;
+        case RiscvInstr::OpCode::EQU://等于 == !(a^b)
+            addInstr(RiscvInstr::OpCode::XOR, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::OpCode::SEQZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR, NULL);
+            break;
+        case RiscvInstr::OpCode::NEQ:
+            addInstr(RiscvInstr::OpCode::SUB, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR, NULL);
+            break;
+        case RiscvInstr::OpCode::LAND:
+            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r1], NULL, 0, EMPTY_STR,NULL);
+            addInstr(RiscvInstr::OpCode::NEG, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR,NULL);
+            addInstr(RiscvInstr::OpCode::AND, _reg[r0], _reg[r0], _reg[r2], 0, EMPTY_STR,NULL);
+            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR,NULL);
+            break;
+        case RiscvInstr::OpCode::LOR:
+            addInstr(RiscvInstr::OpCode::OR, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+            addInstr(RiscvInstr::OpCode::SNEZ, _reg[r0], _reg[r0], NULL, 0, EMPTY_STR, NULL);
+            break;
+        default:
+            addInstr(op, _reg[r0], _reg[r1], _reg[r2], 0, EMPTY_STR, NULL);
+    }
 }
 
 /* Outputs a single instruction line.
@@ -450,6 +511,35 @@ void RiscvDesc::emitInstr(RiscvInstr *i) {
     
     case RiscvInstr::NOT://按位
         oss << "not" << i->r0->name << ", " << i->r1->name;
+        break;
+        
+    //step4
+    case RiscvInstr::SNEZ:
+        oss << "snez" << i->r0->name << ", " << i->r1->name;
+        break;
+        
+    case RiscvInstr::XORI:
+        oss << "xori" << i->r0->name << ", " << i->r1->name << ", " << i->i;
+        break;
+
+    case RiscvInstr::XOR:
+        oss << "xor" << i->r0->name << ", " << i->r1->name << ", " << i->r2->name;
+        break;
+
+    case RiscvInstr::LES:
+        oss << "slt" << i->r0->name << ", " << i->r1->name << ", " << i->r2->name;
+        break;
+
+    case RiscvInstr::GRT:
+        oss << "sgt" << i->r0->name << ", " << i->r1->name << ", " << i->r2->name;
+        break;
+
+    case RiscvInstr::AND:
+        oss << "and" << i->r0->name << ", " << i->r1->name << ", " << i->r2->name;
+        break;
+
+    case RiscvInstr::OR:
+        oss << "or" << i->r0->name << ", " << i->r1->name << ", " << i->r2->name;
         break;
 
     case RiscvInstr::MOVE:

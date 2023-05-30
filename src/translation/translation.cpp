@@ -196,6 +196,65 @@ void Translation::visit(ast::ModExpr *e) {
 
     e->ATTR(val) = tr->genMod(e->e1->ATTR(val), e->e2->ATTR(val));
 }
+
+//step4
+void Translation::visit(ast::LesExpr *e) {//小于
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genLes(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+void Translation::visit(ast::GrtExpr *e) {//大于
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genGrt(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+void Translation::visit(ast::LeqExpr *e) {//小于等于
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genLeq(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+void Translation::visit(ast::GeqExpr *e) {//大于等于
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genGeq(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+void Translation::visit(ast::EquExpr *e) {//等于
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genEqu(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+void Translation::visit(ast::NeqExpr *e) {//不等于
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genNeq(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+void Translation::visit(ast::AndExpr *e) {//逻辑与
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genLAnd(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+void Translation::visit(ast::OrExpr *e) {//逻辑或
+    e->e1->accept(this);
+    e->e2->accept(this);
+
+    e->ATTR(val) = tr->genLOr(e->e1->ATTR(val), e->e2->ATTR(val));
+}
+
+
 /* Translating an ast::IntConst node.
  */
 void Translation::visit(ast::IntConst *e) {

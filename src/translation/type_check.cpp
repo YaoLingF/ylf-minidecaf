@@ -36,6 +36,16 @@ class SemPass2 : public ast::Visitor {
     virtual void visit(ast::MulExpr *);//乘
     virtual void visit(ast::DivExpr *);//除
     virtual void visit(ast::ModExpr *);//模
+    
+    virtual void visit(ast::LesExpr *);//step4
+    virtual void visit(ast::GrtExpr *);
+    virtual void visit(ast::LeqExpr *);
+    virtual void visit(ast::GeqExpr *);
+    virtual void visit(ast::EquExpr *);
+    virtual void visit(ast::NeqExpr *);
+    virtual void visit(ast::AndExpr *);
+    virtual void visit(ast::OrExpr *);
+    
     virtual void visit(ast::IntConst *);
     virtual void visit(ast::NegExpr *);
     virtual void visit(ast::NotExpr *);
@@ -144,6 +154,88 @@ void SemPass2::visit(ast::ModExpr *e) {
 
     e->ATTR(type) = BaseType::Int;
 }
+//step4
+void SemPass2::visit(ast::LesExpr *e) {//小于
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
+void SemPass2::visit(ast::GrtExpr *e) {//大于
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
+void SemPass2::visit(ast::LeqExpr *e) {//小于等于
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
+void SemPass2::visit(ast::GeqExpr *e) {//大于等于
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
+void SemPass2::visit(ast::EquExpr *e) {//等于
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
+void SemPass2::visit(ast::NeqExpr *e) {//不等于
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
+void SemPass2::visit(ast::AndExpr *e) {//逻辑与
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
+
+void SemPass2::visit(ast::OrExpr *e) {//逻辑或
+    e->e1->accept(this);
+    expect(e->e1, BaseType::Int);
+
+    e->e2->accept(this);
+    expect(e->e2, BaseType::Int);
+
+    e->ATTR(type) = BaseType::Int;
+}
+
 
 /* Visits an ast::NegExpr node.
  *

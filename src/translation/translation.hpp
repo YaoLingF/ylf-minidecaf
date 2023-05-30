@@ -33,6 +33,16 @@ class Translation : public ast::Visitor {
     virtual void visit(ast::MulExpr *);//乘
     virtual void visit(ast::DivExpr *);//除
     virtual void visit(ast::ModExpr *);//模
+    
+    virtual void visit(ast::LesExpr *);//step4
+    virtual void visit(ast::GrtExpr *);
+    virtual void visit(ast::LeqExpr *);
+    virtual void visit(ast::GeqExpr *);
+    virtual void visit(ast::EquExpr *);
+    virtual void visit(ast::NeqExpr *);
+    virtual void visit(ast::AndExpr *);
+    virtual void visit(ast::OrExpr *);
+    
     virtual void visit(ast::IntConst *);
     virtual void visit(ast::NegExpr *);
     virtual void visit(ast::NotExpr *);//逻辑

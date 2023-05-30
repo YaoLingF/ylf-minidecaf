@@ -86,6 +86,16 @@ IDENTIFIER    ([A-Za-z][_0-9A-Za-z]*)
 "*"          { return yy::parser::make_TIMES  (loc);       }//乘
 "/"          { return yy::parser::make_SLASH  (loc);       }//除
 "%"          { return yy::parser::make_MOD  (loc);       }//模
+
+"<"          { return yy::parser::make_LT  (loc);       }//step4
+">"          { return yy::parser::make_GT  (loc);       }
+"<="          { return yy::parser::make_LEQ  (loc);       }
+">="          { return yy::parser::make_GEQ  (loc);       }
+"=="          { return yy::parser::make_EQU  (loc);       }
+"!="          { return yy::parser::make_NEQ  (loc);       }
+"&&"          { return yy::parser::make_AND  (loc);       }
+"||"          { return yy::parser::make_OR  (loc);       }
+
 "if"         { return yy::parser::make_IF  (loc);       }
 "else"         { return yy::parser::make_ELSE  (loc);       }
 "while"       { return yy::parser::make_WHILE  (loc);       }
