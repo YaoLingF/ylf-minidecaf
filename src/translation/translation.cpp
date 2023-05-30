@@ -209,7 +209,7 @@ void Translation::visit(ast::GrtExpr *e) {//大于
     e->e1->accept(this);
     e->e2->accept(this);
 
-    e->ATTR(val) = tr->genGrt(e->e1->ATTR(val), e->e2->ATTR(val));
+    e->ATTR(val) = tr->genGtr(e->e1->ATTR(val), e->e2->ATTR(val));
 }
 
 void Translation::visit(ast::LeqExpr *e) {//小于等于
