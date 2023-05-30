@@ -1,3 +1,9 @@
+
+通过 gcc 编译来了解如何翻译运算符到 RISC-V 汇编 riscv64-unknown-elf-gcc -march=rv32im -mabi=ilp32 xxx.c -S -O3 -o xxx.s
+
+
+
+
 # MiniDecaf-2021
 
 ##  C++实验框架
