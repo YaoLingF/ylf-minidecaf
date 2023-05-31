@@ -23,6 +23,7 @@ const char *ASTNode::node_name[] = {"add",
                                     "bitnot",
 
                                     "btype",
+                                    "continue"
                                     "break",
                                     "call",
                                     "comp",
@@ -54,6 +55,8 @@ const char *ASTNode::node_name[] = {"add",
                                     "var",
                                     "varref",
                                     "while",
+                                    "dowhile",
+                                    "for",
                                     "FuncOrDecl"};
 
 /*  Whether to print the decorated abstract syntax tree.
