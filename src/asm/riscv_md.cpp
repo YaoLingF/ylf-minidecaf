@@ -410,7 +410,43 @@ void RiscvDesc::emit(std::string label, const char *body, const char *comment) {
 
     os << std::endl;
 }
+/* Use to put a specified reg to another to pass params.
+ *
+ * PARAMETERS:
+ *   t     - a special tac for param
+ *   cnt   - reg offset A0 + cnt
+ */
+void RiscvDesc::passParamReg(Tac *t, int cnt) {
+    t->LiveOut->add(t->op0.var);
+    std::ostringstream oss;
+    // RISC-V use a0-a7 to pass the first 8 parameters, so it's ok to do so.
+    spillReg(RiscvReg::A0 + cnt, t->LiveOut);
+    int i = lookupReg(t->op0.var);
+    if(i < 0) {
+        auto v = t->op0.var;
+        RiscvReg *base = _reg[RiscvReg::FP];
+        oss << "load " << v << " from (" << base->name
+            << (v->offset < 0 ? "" : "+") << v->offset << ") into "
+            << _reg[RiscvReg::A0 + cnt]->name;
+        addInstr(RiscvInstr::LW, _reg[RiscvReg::A0 + cnt], base, NULL, v->offset, EMPTY_STR,
+                    oss.str().c_str());
+    } else {
+        oss << "copy " << _reg[i]->name << " to " << _reg[RiscvReg::A0 + cnt]->name;
+        addInstr(RiscvInstr::MOVE, _reg[RiscvReg::A0 + cnt], _reg[i], NULL, 0,
+                    EMPTY_STR, oss.str().c_str());
+    }
+}
 
+/* Use to set a param reg.
+ *
+ * PARAMETERS:
+ *   t     - a special tac for param
+ *   cnt   - reg offset A0 + cnt
+ */
+void RiscvDesc::getParamReg(Tac *t, int cnt) {
+    _reg[RiscvReg::A0 + cnt]->var = t->op0.var;
+    _reg[RiscvReg::A0 + cnt]->dirty = true;
+}
 /* Translates a "Functy" object into assembly code and output.
  *
  * PARAMETERS:

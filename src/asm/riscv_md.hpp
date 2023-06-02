@@ -206,6 +206,10 @@ class RiscvDesc : public MachineDesc {
     int lookupReg(tac::Temp);
     // selects a register to spill into memory
     int selectRegToSpill(int, int, LiveSet *);
+    
+    /*** regs for riscv standard call ***/
+    void passParamReg(tac::Tac *t, int cnt);
+    void getParamReg(tac::Tac *t, int cnt);
 };
 
 } // namespace assembly
